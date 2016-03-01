@@ -1,6 +1,4 @@
 import os, shutil, filecmp, time, logging, EXIF, sys
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 logger = logging.getLogger(__name__)
 IGNORES = ['Thumbs.db', '.DS_Store', '.IFO', '.VOB', '.VCD', '.BUP', '.rar', '.idx']
 
@@ -204,26 +202,30 @@ def buildDateFolders(path = "", destination='', copy = True):
 
 ############################################ FUNC CALLS
 ## Step one is to process the files from a HD into a fresh set of type folders. These folders are jpg png etc etc
-# copyToTypeFolders(destination = "A:\Temp", paths = ["G:\\!A77_Photography_Masters"], copy = True)
+copyToTypeFolders(destination = "A:\Temp", paths = ["A:\juliePhotos"], copy = True)
 ## Step two(or three) is to sort these folders into a dated subfolder setup for cleaner sorting. This currently only sorts by year / month folders
 # buildDateFolders(path = "A:\\Temp\\JPG", destination = "A:\date", copy = False)
 ## Step three(or two) is to look for duplicates though this should be taken care of in the copy
 #paths = ["A:\\!PhotosMaster_000\Phone_Photos_master001\\JPG"]
 #doDupCheck(paths = paths, imagesOnly = False, move = False, checkname = True, checksize = True)
 
-class DupCheckUI(QWidget):
-    def __init__(self, parent = None):
-        QWidget.__init__(self, parent)
-        self.mainLayout = QVBoxLayout(self)
 
-def main():
 
-    app = QApplication(sys.argv)
 
-    w = DupCheckUI()
-    w.show()
 
-    sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
+# class DupCheckUI(QWidget):
+#     def __init__(self, parent = None):
+#         QWidget.__init__(self, parent)
+#         self.mainLayout = QVBoxLayout(self)
+#
+# def main():
+#
+#     app = QApplication(sys.argv)
+#
+#     w = DupCheckUI()
+#     w.show()
+#
+#     sys.exit(app.exec_())
+#
+# if __name__ == '__main__':
+#     main()
