@@ -1,6 +1,24 @@
-import os, shutil, filecmp, time, logging, EXIF, sys
+import os, shutil, time, logging
+import filecmp, sys
+try:
+    import EXIF
+except:
+    print("no module named EXIF!!!")
+
 logger = logging.getLogger(__name__)
 IGNORES = ['Thumbs.db', '.DS_Store', '.IFO', '.VOB', '.VCD', '.BUP', '.rar', '.idx']
+
+
+def exportToyaml(data, filePath):
+    import yaml
+
+    if os.path.isfile(filePath):
+        os.remove(filePath)
+
+    with open(filePath, 'w') as outfile:
+        yaml.dump(data, outfile, default_flow_style=False)
+
+    print('Dump complete to {}'.format(filePath))
 
 def isRootFolderThere(rootFolder):
     """
@@ -12,18 +30,18 @@ def isRootFolderThere(rootFolder):
     else:
         return True
 
-def fetchFiles(pathToRootFolder = ''):
+def fetchAllFiles(pathToRootFolder=''):
     files = []
-    if isRootFolderThere(rootFolder = pathToRootFolder):
+    if isRootFolderThere(rootFolder=pathToRootFolder):
         for dirname, dirnames, filenames in os.walk(pathToRootFolder):
             filenames = [file for file in os.scandir(dirname) if file.is_file() and file.name not in IGNORES and os.path.splitext(file.name)[1] not in IGNORES]
             files.extend(filenames)
     return files
 
-def copyToTypeFolders(destination = "", paths = [], copy = True):
+def copyToTypeFolders(destination="", paths=[], copy=True):
     ## Build base directories based off fileTypes
     for eachPath in paths:
-        files = fetchFiles(eachPath)
+        files = fetchAllFiles(eachPath)
         for eachFile in files:
             ## Build a path based on ext types for transferring into
             ext =  os.path.splitext(eachFile.name)[1].replace(".", "")
@@ -82,57 +100,43 @@ def getDateTaken(filePath):
         dateTaken = None
     return dateTaken
 
-def searchForMatchingFiles(rootFolder = "", checkname = True, checksize = True, imagesOnly = False):
-    allFiles        = fetchFiles(rootFolder)
-    searchResults   = {} ## Will populate with filenames as we go through the files
-    for dirname, dirs, files in os.walk(rootFolder):
-        searchResults[dirname] = {}
-        files = [file for file in os.scandir(dirname) if file.is_file() and file.name not in IGNORES and os.path.splitext(file.name)[1] not in IGNORES]
-        for eachFile in files:
-            if eachFile.name not in searchResults[dirname].keys():
-                searchResults[dirname][eachFile.name] = {
-                                                         'nameMatches': [],
-                                                         'sizeMatches': []
-                                                         }
-                for eachItr in allFiles:
-                    if checkname:
-                        if dirname not in eachItr.path and eachFile.name == eachItr.name:
-                            if eachItr.path not in searchResults[dirname][eachFile.name]['nameMatches']:
-                                searchResults[dirname][eachFile.name]['nameMatches'] = [eachItr.path]
-                            else:
-                                searchResults[dirname][eachFile.name]['nameMatches'].extend([eachItr.path])
+def searchForMatchingFileNames(rootFolder=""):
+    print("Searching for matching fileNames in {}....".format(rootFolder))
+    matching = {}
 
-                    if checksize:
-                        if eachFile.path != eachItr.path:
-                            if eachFile.stat().st_size == eachItr.stat().st_size:
-                                if imagesOnly:
-                                    origDate = getDateTaken(eachFile.path)
-                                    itrDate = getDateTaken(eachItr.path)
-                                else:
-                                    origDate = eachFile.stat().st_mtime
-                                    itrDate = eachItr.stat().st_mtime
+    allFiles = fetchAllFiles(rootFolder)
+    allfilenames = [str(f.name) for f in allFiles]
 
-                                if origDate and itrDate:
-                                    if origDate == itrDate:
-                                        if eachItr.path not in searchResults[dirname][eachFile.name]['sizeMatches'] and eachItr.path not in searchResults[dirname][eachFile.name]['nameMatches']:
-                                            searchResults[dirname][eachFile.name]['sizeMatches'] = [eachItr.path]
-                                        elif eachItr.path not in searchResults[dirname][eachFile.name]['nameMatches']:
-                                            searchResults[dirname][eachFile.name]['sizeMatches'].extend([eachItr.path])
-                                        else:
-                                            pass
-    return searchResults
+    for fileName in allFiles:
+        count = allfilenames.count(fileName.name)
+        if count > 1:
+            matching[fileName.path] = fileName.name
+    print(matching)
+    return matching
 
-def doDupCheck(paths = [], imagesOnly = False, move = False, checkname = True, checksize = True):
+def searchForMatchingFileSizes(rootFolder=""):
+    print("Searching for matching fileNames in {}....".format(rootFolder))
+    matching = {}
+    allFiles = fetchAllFiles(rootFolder)
+    allfilenames = [(str(f.name), f.stat().st_size, f.path) for f in allFiles]
+
+    for fileName, fileSize, filePath in allfilenames:
+        for fileEntry in allFiles:
+            if fileEntry.stat().st_size == fileSize and fileEntry.name != fileName:
+                matching[filePath] = (fileSize, fileEntry.path, fileEntry.stat().st_size)
+    return matching
+
+def doDupCheck(paths=[], imagesOnly=False, move=False, checkname=True, checksize=True):
     for eachFilePath in paths:
         print("################# SCANNING FOR DUPLICATES IN %s" % eachFilePath)
         startTime = time.time()
-        results = searchForMatchingFiles(rootFolder = eachFilePath, checkname = checkname, checksize = checksize, imagesOnly = imagesOnly)
+        results = searchForMatchingFiles(rootFolder=eachFilePath, checkname=checkname, checksize=checksize, imagesOnly=imagesOnly)
 
         exportToyaml(results)
 
         for eachDir, dirData in results.items():
             baseFilesNames = []
-            print("#####################################################################################################\n{0}".format(eachDir))
+            print("#####################################################################################################\n{}".format(eachDir))
             for eachFileName, fileData in dirData.items():
                 baseFilesNames.extend([eachFileName])
 
@@ -166,8 +170,8 @@ def doDupCheck(paths = [], imagesOnly = False, move = False, checkname = True, c
             print("#####################################################################################################")
         print('Search Finished... time taken: %02d seconds' % (time.time() - startTime))
 
-def buildDateFolders(path = "", destination='', copy = True):
-    files = fetchFiles(path)
+def buildDateFolders(path="", destination='', copy=True):
+    files = fetchAllFiles(path)
     print("Processing files into dated folders for {0}".format(path))
     for eachFile in files:
         with open(eachFile.path, 'rb') as fh:
@@ -202,30 +206,12 @@ def buildDateFolders(path = "", destination='', copy = True):
 
 ############################################ FUNC CALLS
 ## Step one is to process the files from a HD into a fresh set of type folders. These folders are jpg png etc etc
-copyToTypeFolders(destination = "A:\Temp", paths = ["A:\juliePhotos"], copy = True)
+#copyToTypeFolders(destination="A:\Temp", paths=["A:\juliePhotos"], copy=True)
 ## Step two(or three) is to sort these folders into a dated subfolder setup for cleaner sorting. This currently only sorts by year / month folders
-# buildDateFolders(path = "A:\\Temp\\JPG", destination = "A:\date", copy = False)
+# buildDateFolders(path="A:\\Temp\\JPG", destination="A:\date", copy=False)
 ## Step three(or two) is to look for duplicates though this should be taken care of in the copy
 #paths = ["A:\\!PhotosMaster_000\Phone_Photos_master001\\JPG"]
-#doDupCheck(paths = paths, imagesOnly = False, move = False, checkname = True, checksize = True)
-
-
-
-
-
-# class DupCheckUI(QWidget):
-#     def __init__(self, parent = None):
-#         QWidget.__init__(self, parent)
-#         self.mainLayout = QVBoxLayout(self)
-#
-# def main():
-#
-#     app = QApplication(sys.argv)
-#
-#     w = DupCheckUI()
-#     w.show()
-#
-#     sys.exit(app.exec_())
-#
-# if __name__ == '__main__':
-#     main()
+#paths = ["M:\\!MOVIES\\!KEEP"]
+#doDupCheck(paths=paths, imagesOnly=False, move=False, checkname=True, checksize=True)
+exportToyaml(searchForMatchingFileNames(rootFolder="M:\\!MOVIES"), filePath="C:\\temp\\matchingFileName.yaml")
+exportToyaml(searchForMatchingFileSizes(rootFolder="M:\\!MOVIES"), filePath="C:\\temp\\matchingFileSize.yaml")
