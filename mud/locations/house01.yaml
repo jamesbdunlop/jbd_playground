@@ -1,0 +1,35 @@
+locKey: house01
+locationName: Happy House
+description:
+        - The happy house is known for it's happiness.
+        - Lots of people come here!
+N:
+E:
+S: home
+W:
+validLocationItems:
+    Garden:
+      itemName: Garden
+      isRootItem: True
+      canTakeItem: False
+      taken: False
+      failedTakeMsg: You really want to try to put a whole garden in your inventory???? Er no.
+      takenDescription: You see a very happy garden!
+      itemDescription: You see a very happy garden!
+      validActions:
+          look: You see a very happy garden!
+          get:
+      children:
+        - itemName: Pot Plant
+          itemDescription: It has a worm in it.
+          canTakeItem: True
+          taken: False
+          failedTakeMsg:
+          takenDescription: You see a very happy garden! Minus the pot plant that you prob stole.
+          validActions:
+              look: It is a happy pot plant!
+              touch: Feels like a pot.
+              taste: You're not okay are you?
+              smell: It smells like lavendar.
+              get: You step carefully into the garden and get the potplant.
+              steal: You look around to make sure no one is watching and steal the pot plant!
