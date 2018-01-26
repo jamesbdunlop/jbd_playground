@@ -24,6 +24,7 @@ class Location(object):
     def processData(self, data):
         ## The key for the gameData dictionary
         self._locKey = data['locKey']
+
         # The name of the location!
         self.locName = data['locationName']
 
