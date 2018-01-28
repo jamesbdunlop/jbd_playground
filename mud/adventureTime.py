@@ -265,8 +265,8 @@ def fetchData():
     for eachFile in os.listdir(locations):
         data = yaml.load(open(os.path.join(locations, eachFile), "r"))
         locationData[eachFile.partition(".")[0]] = data
-
     return locationData
+
 
 def startGame(locationData = None):
     ## this is a new game
@@ -445,7 +445,7 @@ def runGame(locationData, gameData, repeatDescription=True):
                                 curLocation.locationItems.remove(eachItem.itemName)
 
                                 ## Now update the games state in the gameData we are passing around.
-                                gameData[curLocation.locationName] = curLocation
+                                gameData[curLocation.locationName] = curLocation.data
 
                                 runGame(locationData, gameData, False)
                             else:
@@ -504,7 +504,7 @@ def runGame(locationData, gameData, repeatDescription=True):
                                     curLocation.removeChildItem(eachItem, child)
 
                                     ## Now update the games state in the gameData we are passing around.
-                                    gameData[curLocation.locKey] = curLocation
+                                    gameData[curLocation.locKey] = curLocation.data
                                     runGame(gameData[curLocation.locKey].data, gameData, False) ## Here is where we have to pass back valid location data!
 
                             ## We can't find a valid action at all!
@@ -521,4 +521,3 @@ def runGame(locationData, gameData, repeatDescription=True):
         runGame(locationData, gameData, False)
 
 startGame(fetchData())
-

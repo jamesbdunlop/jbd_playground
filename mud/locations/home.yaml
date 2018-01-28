@@ -12,7 +12,7 @@ validLocationItems:
       isRootItem: True
       canTakeItem: False
       taken: False
-      takenDescription: You see a tree.
+      takenDescription:
       failedTakeMsg: You really do not look strong enough to pick up an entire tree!
       itemDescription: There is an apple in this tree that looks really tasty!
       validActions:
