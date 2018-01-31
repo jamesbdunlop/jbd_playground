@@ -13,6 +13,7 @@ HAVEITEM = "You um.. prob have that item already!"
 SEP = "-----"
 SEPNL = "-----\n"
 INPUTQUERY = ">> What would you like to do?:   "
+
 inventory = {} ## To move to a yaml write file! So we can continue where we left off.
 
 
