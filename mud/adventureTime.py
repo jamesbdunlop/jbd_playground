@@ -506,7 +506,7 @@ def runGame(locationData, gameData, repeatDescription=True):
 
                                     ## Now update the games state in the gameData we are passing around.
                                     gameData[curLocation.locKey] = curLocation.data
-                                    runGame(gameData[curLocation.locKey].data, gameData, False) ## Here is where we have to pass back valid location data!
+                                    runGame(gameData[curLocation.locKey], gameData, False) ## Here is where we have to pass back valid location data!
 
                             ## We can't find a valid action at all!
                             else:
