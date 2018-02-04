@@ -1,46 +1,39 @@
 locKey: woods
 locationName: the old woods.
 description:
-        - its an old spooky wood with a note on the ground in front of it.
-        - there is also a skull next to the note.
+        - its an old spooky wood.
 N:
 E:
 S:
 W: house01
 validLocationItems:
     Note:
-      itemName: Note
       isRootItem: True
+      itemName: Note
+      itemDescription: its a note.. on the ground
       canTakeItem: True
-      taken: True
-      takenDescription: you pick up  the note off the ground
+      takenDescription: You pick up the note off the ground
       failedTakeMsg:
-      itemDescription: There is an apple in this tree that looks really tasty!
+      taken: False
       validActions:
-          look: It's a big Apple Tree.
-          get:
-      children:
-        - itemName: Apple
-          itemDescription: It has a worm in it.
-          canTakeItem: True
-          taken: False
-          takenDescription: You already grabbed the apple!
-          failedTakeMsg:
-          validActions:
-              look: The apple looks red and shiney!
-              touch: The apple feels like rough bark would feel.
-              taste: It tastes dry and yucky
-              smell: You smell the old scent of dog wee on it.
-              get: You climb up the tree and get the apple.
-              steal: You look around to make sure no one is watching and steal the apple!
-        - itemName: Book
-          itemDescription: It is falling apart.
-          canTakeItem: False
-          taken: False
-          failedTakeMsg: You try to take the book but as you climb the tree your foot slips and you fall off the tree to the ground. Guess it's too high for you!
-          takenDescription: You already have the book.
-          validActions:
-              look: The Book has missing pages.
-              touch: The book is about to fall apart so you decide not to touch it.
-              smell: You smell the old scent of dog wee on it.
-              get: The book falls apart in your hands but you save one piece of it.
+          look: The note looks old
+          touch: The note is cold to touch!
+          taste: It tastes dry and yucky
+          get: You took the note
+          read: DO NOT ENTER THESE WOODS
+      children: []
+    Can:
+      isRootItem: True
+      itemName: Can
+      itemDescription: It's a can of beans on the ground.
+      canTakeItem: True
+      takenDescription: You pick the can up off the ground.
+      failedTakeMsg:
+      taken: False
+      validActions:
+         look: The can looks old.
+         touch: The can is warm to touch!
+         taste: It tastes dry and yucky.
+         get: You took the can.
+         read: It says HEINZ beanz on it.
+      children: []

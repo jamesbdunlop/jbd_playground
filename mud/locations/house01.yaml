@@ -13,7 +13,7 @@ validLocationItems:
       isRootItem: True
       canTakeItem: False
       taken: False
-      failedTakeMsg: You really want to try to put a whole garden in your inventory???? Er no.
+      failedTakeMsg: You really want to try to put a whole garden in your inventory????... Er no.
       takenDescription: You see a very happy garden!
       itemDescription: You see a very happy garden!
       validActions:
