@@ -1,0 +1,46 @@
+locKey: woods
+locationName: the old woods.
+description:
+        - its an old spooky wood with a note on the ground in front of it.
+        - there is also a skull next to the note.
+N:
+E:
+S:
+W: house01
+validLocationItems:
+    Note:
+      itemName: Note
+      isRootItem: True
+      canTakeItem: True
+      taken: True
+      takenDescription: you pick up  the note off the ground
+      failedTakeMsg:
+      itemDescription: There is an apple in this tree that looks really tasty!
+      validActions:
+          look: It's a big Apple Tree.
+          get:
+      children:
+        - itemName: Apple
+          itemDescription: It has a worm in it.
+          canTakeItem: True
+          taken: False
+          takenDescription: You already grabbed the apple!
+          failedTakeMsg:
+          validActions:
+              look: The apple looks red and shiney!
+              touch: The apple feels like rough bark would feel.
+              taste: It tastes dry and yucky
+              smell: You smell the old scent of dog wee on it.
+              get: You climb up the tree and get the apple.
+              steal: You look around to make sure no one is watching and steal the apple!
+        - itemName: Book
+          itemDescription: It is falling apart.
+          canTakeItem: False
+          taken: False
+          failedTakeMsg: You try to take the book but as you climb the tree your foot slips and you fall off the tree to the ground. Guess it's too high for you!
+          takenDescription: You already have the book.
+          validActions:
+              look: The Book has missing pages.
+              touch: The book is about to fall apart so you decide not to touch it.
+              smell: You smell the old scent of dog wee on it.
+              get: The book falls apart in your hands but you save one piece of it.

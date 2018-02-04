@@ -4,7 +4,7 @@ description:
         - The happy house is known for it's happiness.
         - Lots of people come here!
 N:
-E:
+E: woods
 S: home
 W:
 validLocationItems:
