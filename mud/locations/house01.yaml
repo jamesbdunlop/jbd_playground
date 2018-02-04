@@ -1,8 +1,8 @@
 locKey: house01
 locationName: Happy House
 description:
-        - The happy house is known for it's happiness.
-        - Lots of people come here!
+  - The happy house is known for it's happiness.
+  - Lots of people come here!
 N:
 E: woods
 S: home

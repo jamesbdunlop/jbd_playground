@@ -112,6 +112,10 @@ class Location(object):
     def locationItems(self):
         return self._locationItemData or None
 
+    def removeLocationItem(self, eachItem):
+        self.locationItems.remove(eachItem)
+        self.updateItemData()
+
     def isValidDirection(self, dir):
         input = dir.lower()
         if input == "n" and self.north is not None:
@@ -138,33 +142,34 @@ class Location(object):
 
         ## Now recreate the item data based off the current items in memory
         validLocationItems = {}
-        for eachItem in self.locationItems:
-            validLocationItems[eachItem.itemName] = {}
-            validLocationItems[eachItem.itemName]["itemName"] = eachItem.itemName
-            validLocationItems[eachItem.itemName]["itemDescription"] = eachItem.itemDescription
-            validLocationItems[eachItem.itemName]["isRootItem"] = eachItem.isRootItem
-            validLocationItems[eachItem.itemName]["canTakeItem"] = eachItem.canTakeItem
-            validLocationItems[eachItem.itemName]["taken"] = eachItem.isTaken
-            validLocationItems[eachItem.itemName]["takenDescription"] = eachItem.takenDescription
-            validLocationItems[eachItem.itemName]["failedTakeMsg"] = eachItem.failedTakeMsg
-            validLocationItems[eachItem.itemName]["validActions"] = eachItem.validActions
-            ## Now get the item's children
-            if not eachItem.children:
-                validLocationItems[eachItem.itemName]["children"] = []
-            else:
-                children = []
-                for eachChild in eachItem.children:
-                    childData = {}
-                    childData["isRootItem"] = False
-                    childData["itemName"] = eachChild.itemName
-                    childData["itemDescription"] = eachChild.itemDescription
-                    childData["canTakeItem"] = eachChild.canTakeItem
-                    childData["taken"] = eachChild.isTaken
-                    childData["takenDescription"] = eachChild.takenDescription
-                    childData["failedTakeMsg"] = eachChild.failedTakeMsg
-                    childData["validActions"] = eachChild.validActions
-                    children.append(childData)
-                validLocationItems[eachItem.itemName]["children"] = children
+        if self.locationItems is not None:
+            for eachItem in self.locationItems:
+                validLocationItems[eachItem.itemName] = {}
+                validLocationItems[eachItem.itemName]["itemName"] = eachItem.itemName
+                validLocationItems[eachItem.itemName]["itemDescription"] = eachItem.itemDescription
+                validLocationItems[eachItem.itemName]["isRootItem"] = eachItem.isRootItem
+                validLocationItems[eachItem.itemName]["canTakeItem"] = eachItem.canTakeItem
+                validLocationItems[eachItem.itemName]["taken"] = eachItem.isTaken
+                validLocationItems[eachItem.itemName]["takenDescription"] = eachItem.takenDescription
+                validLocationItems[eachItem.itemName]["failedTakeMsg"] = eachItem.failedTakeMsg
+                validLocationItems[eachItem.itemName]["validActions"] = eachItem.validActions
+                ## Now get the item's children
+                if not eachItem.children:
+                    validLocationItems[eachItem.itemName]["children"] = []
+                else:
+                    children = []
+                    for eachChild in eachItem.children:
+                        childData = {}
+                        childData["isRootItem"] = False
+                        childData["itemName"] = eachChild.itemName
+                        childData["itemDescription"] = eachChild.itemDescription
+                        childData["canTakeItem"] = eachChild.canTakeItem
+                        childData["taken"] = eachChild.isTaken
+                        childData["takenDescription"] = eachChild.takenDescription
+                        childData["failedTakeMsg"] = eachChild.failedTakeMsg
+                        childData["validActions"] = eachChild.validActions
+                        children.append(childData)
+                    validLocationItems[eachItem.itemName]["children"] = children
         self.data['validLocationItems'] = validLocationItems
 
 class Item(object):
@@ -393,6 +398,7 @@ def runGame(locationData, gameData, repeatDescription=True):
             ## Create a variable to store if we found a root locationItem the action is being performed on.
 
             def checkLocationItems():
+
                 ## Now check through ALL the location items. First we check through the rootItems
                 for eachItem in curLocation.locationItems:
                     ## Store the location name into an easy to read variable name.
@@ -443,15 +449,18 @@ def runGame(locationData, gameData, repeatDescription=True):
                                 inventory[eachItem.itemName] = eachItem.itemDescription
 
                                 ## Remove this item from the game data
-                                curLocation.locationItems.remove(eachItem.itemName)
+                                curLocation.removeLocationItem(eachItem)
 
                                 ## Now update the games state in the gameData we are passing around.
-                                gameData[curLocation.locationName] = curLocation.data
+                                gameData[curLocation.locKey] = curLocation.data
+                                runGame(gameData[curLocation.locKey], gameData, False) ## Here is where we have to pass back valid location data!
 
-                                runGame(locationData, gameData, False)
+                            ## We can't find a valid action at all!
                             else:
-                                print(MSG_INVALID_ITEMCOMMAND.format(locationItemName))
-                            runGame(locationData, gameData, False)
+                                print(MSG_INVALID_ITEMCOMMAND.format(eachItem))
+                                valid = [v for v in validLocationActions.keys()]
+                                print("Valid actions are {}".format(valid))
+                                runGame(locationData, gameData, False)
 
             def checkLocationItemChildren():
                 for eachItem in curLocation.locationItems:
