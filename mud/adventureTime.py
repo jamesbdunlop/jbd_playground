@@ -273,7 +273,7 @@ def fetchData():
         locationData[eachFile.partition(".")[0]] = data
     return locationData
 
-
+######hi dad###
 def startGame(locationData = None):
     ## this is a new game
     os.system("cls")

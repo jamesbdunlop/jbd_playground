@@ -17,8 +17,8 @@ validLocationItems:
       taken: False
       validActions:
           look: The note looks old
-          touch: The note is cold to touch!
-          taste: It tastes dry and yucky
+          touch: The note is wet to touch!
+          taste: It... why are you even trying to taste it?
           get: You took the note
           read: DO NOT ENTER THESE WOODS
       children: []

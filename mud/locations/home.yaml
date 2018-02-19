@@ -17,7 +17,7 @@ validLocationItems:
       itemDescription: There is an apple in this tree that looks really tasty!
       validActions:
           look: It's a big Apple Tree.
-          get:
+          get: how... just how?
       children:
         - itemName: Apple
           itemDescription: It has a worm in it.
